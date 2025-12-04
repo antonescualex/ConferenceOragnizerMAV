@@ -19,6 +19,9 @@ Review.belongsTo(Reviewer, { foreignKey: "reviewerId" });
 Article.hasMany(Review, { foreignKey: "articleId" });
 Review.belongsTo(Article, { foreignKey: "articleId" });
 
+Organiser.hasMany(Conference, { foreignKey: "oragniserId" });
+
+
 app.use(
     express.urlencoded({
         extended: true,
@@ -104,6 +107,7 @@ app.get("/reviews", async (req, res, next) => {
 //Article has an Author
 //Conference has a Organiser
 //Review has a reviewer
+//---------------------------------------------------------
 
 app.get("/authors/:authorId/articles", async (req, res, next) => {
     try {
@@ -127,17 +131,17 @@ app.get("/authors/:authorId/articles", async (req, res, next) => {
 });
 
 
-app.get("organisers/:orgId/conferences", async (req, res, next) => {
+app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
 
     try {
-        const org = Organiser.findByPk(req.params.orgId, {
+        const organiser = await Organiser.findByPk(req.params.orgId, {
             include: [Conference]
-        })
-        if (!org) {
+        });
+        if (!organiser) {
             res.status(404).json({ message: "Nu exista organizator cu acest id" })
         }
         else {
-            res.status(202).json(org.conferences)
+            res.status(202).json(organiser.conferences)
         }
     }
     catch (err) {
@@ -146,25 +150,20 @@ app.get("organisers/:orgId/conferences", async (req, res, next) => {
 });
 
 //---------------------------------------------------------
-app.get("/reviewers/:revId/reviews", async (req, res, next) => {
+app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
     try {
-        const rev = Review.findByPk(req.params.revId);
+        const reviewer = await Reviewer.findByPk(req.params.reviewerId);
         if (!rec) {
             res.status(404).json({ message: "Nu am gasit reviewer" })
         }
         else {
-            res.status(202).json(rev.reviews);
+            res.status(202).json(reviewer.reviews);
         }
     }
     catch (err) {
         next(err);
     }
 })
-
-
-
-
-
 
 
 // DELETE METHOD FOR ALL CLASSES BY ID
@@ -249,7 +248,6 @@ app.delete("/reviews/:idR", async (req, res, next) => {
     }
 });
 
-
 app.delete("/articles/:idA", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
@@ -265,12 +263,11 @@ app.delete("/articles/:idA", async (req, res, next) => {
         next(err);
     }
 });
-//---------------------------------------------------------------------------
 
 
 
 
-// POST METHOD pentru creare clase
+// POST PENTRU TOATE CLASELE
 //---------------------------------------------------------------------------
 app.post("/reviewer", async (req, res, next) => {
     try {
@@ -305,10 +302,9 @@ app.post("/author", async (req, res, next) => {
 app.post("/article", async (req, res, next) => {
     try {
         const article = await Article.create(req.body);
-        res.status(201).json(article);
         res.status(201).json({
             message: "Articol creat",
-
+            data: article
         });
     }
     catch (err) {
@@ -321,7 +317,7 @@ app.post("/review", async (req, res, next) => {
         const review = await Review.create(req.body);
         res.status(201).json({
             message: "Review creat",
-
+            data: review
         });
 
     }
@@ -343,12 +339,10 @@ app.post("/organiser", async (req, res, next) => {
         next(error);
     }
 })
+
 //---------------------------------------------------------------------------
-
-
-
-
-
+// METODA DE PORNIRE A SERVERULUI SI ASCULTAREA CERERILOR HTTP
+//---------------------------------------------------------------------------
 app.listen(port, () => {
     console.log("Server running on http://localhost:" + port);
 });
