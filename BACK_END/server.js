@@ -29,6 +29,9 @@ app.use(
 );
 app.use(express.json());
 
+
+// METODA CARE RESETEAZA BAZA DE DATE SI RECEREAZA TOATE TABELELE DEFINITE IN SEQUELIZE
+//---------------------------------------------------------------------------
 app.get("/create", async (req, res) => {
     await sequelize.sync({
         force: true
@@ -69,8 +72,8 @@ app.get("/articles", async (req, res, next) => {
 
 app.get("/conferences", async (req, res, next) => {
     try {
-        const conf = await Conference.findAll();
-        res.status(200).json(conf);
+        const conference = await Conference.findAll();
+        res.status(200).json(conference);
     } catch (err) {
         next(err);
     }
@@ -78,8 +81,8 @@ app.get("/conferences", async (req, res, next) => {
 
 app.get("/organisers", async (req, res, next) => {
     try {
-        const org = await Organiser.findAll();
-        res.status(200).json(org);
+        const organiser = await Organiser.findAll();
+        res.status(200).json(organiser);
     } catch (err) {
         next(err);
     }
@@ -87,8 +90,8 @@ app.get("/organisers", async (req, res, next) => {
 
 app.get("/reviews", async (req, res, next) => {
     try {
-        const rev = await Review.findAll();
-        res.status(200).json(rev);
+        const review = await Review.findAll();
+        res.status(200).json(review);
     } catch (err) {
         next(err);
     }
@@ -103,13 +106,11 @@ app.get("/reviews", async (req, res, next) => {
 //---------------------------------------------------------
 app.get("/authors/:authorId/articles", async (req, res, next) => {
     try {
-        const author = await Author.findByPk(req.params.authorId,
-            {
+        const author = await Author.findByPk(req.params.authorId, {
                 include: [Article]
-
             });
         if (!author) {
-            res.status(404).json({ message: "Nu am gasit autorul" })
+            res.status(404).json({ message: "Nu exista autor cu acest id" })
         }
         else {
             //const articles=author.articles;
@@ -144,7 +145,7 @@ app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.findByPk(req.params.reviewerId);
         if (!rec) {
-            res.status(404).json({ message: "Nu am gasit reviewer" })
+            res.status(404).json({ message: "Nu exista reviewer cu acest id" })
         }
         else {
             res.status(202).json(reviewer.reviews);
@@ -181,10 +182,10 @@ app.delete("/reviewers/:idR", async (req, res, next) => {
         const deletedCount = await Reviewer.destroy({ where: { id: idR } });
 
         if (deletedCount === 0) {
-            res.status(404).json({ message: "Author not found" });
+            res.status(404).json({ message: "Reviewer not found" });
         }
         else {
-            res.status(200).json({ message: "Author deleted successfully" });
+            res.status(200).json({ message: "Reviewer deleted successfully" });
         }
     } catch (err) {
         next(err);
@@ -197,10 +198,10 @@ app.delete("/organisers/:idO", async (req, res, next) => {
         const deletedCount = await Organiser.destroy({ where: { id: idO } });
 
         if (deletedCount === 0) {
-            res.status(404).json({ message: "Author not found" });
+            res.status(404).json({ message: "Organiser not found" });
         }
         else {
-            res.status(200).json({ message: "Author deleted successfully" });
+            res.status(200).json({ message: "Organiser deleted successfully" });
         }
     } catch (err) {
         next(err);
@@ -213,10 +214,10 @@ app.delete("/conferences/:idC", async (req, res, next) => {
         const deletedCount = await Reviewer.destroy({ where: { id: idC } });
 
         if (deletedCount === 0) {
-            res.status(404).json({ message: "Author not found" });
+            res.status(404).json({ message: "Conference not found" });
         }
         else {
-            res.status(200).json({ message: "Author deleted successfully" });
+            res.status(200).json({ message: "Conference deleted successfully" });
         }
     } catch (err) {
         next(err);
@@ -229,10 +230,10 @@ app.delete("/reviews/:idR", async (req, res, next) => {
         const deletedCount = await Review.destroy({ where: { id: idR } });
 
         if (deletedCount === 0) {
-            res.status(404).json({ message: "Author not found" });
+            res.status(404).json({ message: "Review not found" });
         }
         else {
-            res.status(200).json({ message: "Author deleted successfully" });
+            res.status(200).json({ message: "Review deleted successfully" });
         }
     } catch (err) {
         next(err);
@@ -245,10 +246,10 @@ app.delete("/articles/:idA", async (req, res, next) => {
         const deletedCount = await Article.destroy({ where: { id: idA } });
 
         if (deletedCount === 0) {
-            res.status(404).json({ message: "Author not found" });
+            res.status(404).json({ message: "Article not found" });
         }
         else {
-            res.status(200).json({ message: "Author deleted successfully" });
+            res.status(200).json({ message: "Article deleted successfully" });
         }
     } catch (err) {
         next(err);
@@ -263,7 +264,10 @@ app.delete("/articles/:idA", async (req, res, next) => {
 app.post("/reviewer", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.create(req.body);
-        res.status(201).json(reviewer);
+        res.status(201).json({
+            message: "Reviewer has been created",
+            data: reviewer
+        });
     } catch (err) {
         next(err);
     }
@@ -273,7 +277,10 @@ app.post("/reviewer", async (req, res, next) => {
 app.post("/conference", async (req, res, next) => {
     try {
         const conference = await Conference.create(req.body);
-        res.status(201).json(conference);
+        res.status(201).json({ 
+            message: "Conference has been created",
+            data: conference
+        });
     } catch (err) {
         next(err);
     }
@@ -284,7 +291,10 @@ app.post("/conference", async (req, res, next) => {
 app.post("/author", async (req, res, next) => {
     try {
         const author = await Author.create(req.body);
-        res.status(201).json(author);
+        res.status(201).json({
+            message: "Author has been created",
+            data: author
+        });
     } catch (err) {
         next(err);
     }
@@ -294,20 +304,20 @@ app.post("/article", async (req, res, next) => {
     try {
         const article = await Article.create(req.body);
         res.status(201).json({
-            message: "Articol creat",
+            message: "Article has been created",
             data: article
         });
     }
     catch (err) {
         next(err);
     }
-})
+});
 
 app.post("/review", async (req, res, next) => {
     try {
         const review = await Review.create(req.body);
         res.status(201).json({
-            message: "Review creat",
+            message: "Review has been created",
             data: review
         });
 
@@ -315,21 +325,21 @@ app.post("/review", async (req, res, next) => {
     catch (error) {
         next(error);
     }
-})
+});
 
 app.post("/organiser", async (req, res, next) => {
     try {
-        const org = await Organiser.create(req.body);
+        const organiser = await Organiser.create(req.body);
         res.status(201).json({
-            message: "Organiser creat",
-            data: org
+            message: "Organiser has been created",
+            data: organiser
         });
 
     }
     catch (error) {
         next(error);
     }
-})
+});
 
 
 //---------------------------------------------------------------------------
@@ -463,7 +473,9 @@ app.listen(port, () => {
     console.log("Server running on http://localhost:" + port);
 });
 
-
+//---------------------------------------------------------------------------
+// METODA CE CAPTEAZA ORICE EROARE A SERVERULUI
+//---------------------------------------------------------------------------
 app.use((err, req, res, next) => {
     res.status(500).json({ message: "500 - Server Error" });
 });
