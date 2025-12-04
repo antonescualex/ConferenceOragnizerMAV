@@ -59,6 +59,24 @@ app.get("/authors", async (req, res, next) => {
     }
 });
 
+// DELETE AUTHORS BY ID
+
+app.delete("/authors/:idAuthor", async (req, res, next) => {
+    try {
+        const idAuthor = req.params.idAuthor;
+        const deletedCount = await Author.destroy({ where: {idAuthor} });
+
+        if(deletedCount === 0) {
+            res.status(404).json({ message: "Author not found" });
+        }
+        else {
+            res.status(200).json({ message: "Author deleted successfully" });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
 // POST /reviewers
 
 app.post("/reviewers", async (req, res, next) => {
