@@ -162,7 +162,7 @@ app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
 app.delete("/authors/:idAuthor", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
-        const deletedCount = await Author.destroy({ where: { idAuthor } });
+        const deletedCount = await Author.destroy({ where: { id: idAuthor } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Author not found" });
@@ -178,7 +178,7 @@ app.delete("/authors/:idAuthor", async (req, res, next) => {
 app.delete("/reviewers/:idR", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
-        const deletedCount = await Reviewer.destroy({ where: { idR } });
+        const deletedCount = await Reviewer.destroy({ where: { id: idR } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Author not found" });
@@ -194,7 +194,7 @@ app.delete("/reviewers/:idR", async (req, res, next) => {
 app.delete("/organisers/:idO", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
-        const deletedCount = await Organiser.destroy({ where: { idO } });
+        const deletedCount = await Organiser.destroy({ where: { id: idO } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Author not found" });
@@ -210,7 +210,7 @@ app.delete("/organisers/:idO", async (req, res, next) => {
 app.delete("/conferences/:idC", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
-        const deletedCount = await Reviewer.destroy({ where: { idC } });
+        const deletedCount = await Reviewer.destroy({ where: { id: idC } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Author not found" });
@@ -226,7 +226,7 @@ app.delete("/conferences/:idC", async (req, res, next) => {
 app.delete("/reviews/:idR", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
-        const deletedCount = await Review.destroy({ where: { idR } });
+        const deletedCount = await Review.destroy({ where: { id: idR } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Author not found" });
@@ -242,7 +242,7 @@ app.delete("/reviews/:idR", async (req, res, next) => {
 app.delete("/articles/:idA", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
-        const deletedCount = await Article.destroy({ where: { idA } });
+        const deletedCount = await Article.destroy({ where: { id: idA } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Author not found" });
