@@ -20,6 +20,7 @@ Article.hasMany(Review, { foreignKey: "articleId" });
 Review.belongsTo(Article, { foreignKey: "articleId" });
 
 Organiser.hasMany(Conference, { foreignKey: "organiserId" });
+Conference.belongsTo(Organiser, { foreignKey: "organiserId"});
 
 
 app.use(
@@ -37,6 +38,101 @@ app.get("/create", async (req, res) => {
         force: true
     });
     res.json({ message: "Database created!" });
+});
+
+
+//---------------------------------------------------------------------------
+// GET METHOD BY ID FOR ALL MODELS
+//---------------------------------------------------------------------------
+
+app.get("/authors/:idAuthor", async (req, res, next) => {
+    try {
+        const author = await Author.findByPk(req.params.idAuthor);
+
+        if(!author) {
+            res.status(404).json({ message: "Author not found" });
+        }
+        else {
+            res.status(200).json(author);
+        }
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/reviewers/:idReviewer", async (req, res, next) => {
+    try {
+        const reviewer = await Reviewer.findByPk(req.params.idReviewer);
+
+        if(!reviewer) {
+            res.status(404).json({ message: "Reviewer not found" })
+        }
+        else {
+            res.status(200).json(reviewer);
+        } 
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/articles/:idArticle", async (req, res, next) => {
+    try {
+        const article = await Article.findByPk(req.params.idArticle);
+
+        if(!article) {
+            res.status(404).json({ message: "Article not found" }); 
+        }
+        else {
+            res.status(200).json(article);
+        }
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/conferences/:idConference", async (req, res, next) => {
+    try {
+        const conference = await Conference.findByPk(req.params.idConference);
+
+        if(!conference) {
+            res.status(404).json({ message: "Conference not found" });
+        }
+        else {
+            res.status(200).json(conference);
+        }     
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/organisers/:idOrganiser", async (req, res, next) => {
+    try {
+        const organiser = await Organiser.findByPk(req.params.idOrganiser);
+
+        if(!organiser) {
+            res.status(404).json({ message: "Organiser not found" });
+        }
+        else {
+            res.status(200).json(organiser);
+        }
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/reviews/:idReview", async (req, res, next) => {
+    try {
+        const review = await Review.findByPk(req.params.idReview);
+        
+        if(!review) {
+            res.status(404).json({ message: "Review not found" });
+        }
+        else {
+            res.status(200).json(review);
+        }
+    } catch (err) {
+        next(err);
+    }
 });
 
 
@@ -72,8 +168,8 @@ app.get("/articles", async (req, res, next) => {
 
 app.get("/conferences", async (req, res, next) => {
     try {
-        const conference = await Conference.findAll();
-        res.status(200).json(conference);
+        const conferences = await Conference.findAll();
+        res.status(200).json(conferences);
     } catch (err) {
         next(err);
     }
@@ -81,8 +177,8 @@ app.get("/conferences", async (req, res, next) => {
 
 app.get("/organisers", async (req, res, next) => {
     try {
-        const organiser = await Organiser.findAll();
-        res.status(200).json(organiser);
+        const organisers = await Organiser.findAll();
+        res.status(200).json(organisers);
     } catch (err) {
         next(err);
     }
@@ -90,8 +186,8 @@ app.get("/organisers", async (req, res, next) => {
 
 app.get("/reviews", async (req, res, next) => {
     try {
-        const review = await Review.findAll();
-        res.status(200).json(review);
+        const reviews = await Review.findAll();
+        res.status(200).json(reviews);
     } catch (err) {
         next(err);
     }
