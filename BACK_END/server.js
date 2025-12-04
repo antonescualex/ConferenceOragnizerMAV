@@ -19,7 +19,7 @@ Review.belongsTo(Reviewer, { foreignKey: "reviewerId" });
 Article.hasMany(Review, { foreignKey: "articleId" });
 Review.belongsTo(Article, { foreignKey: "articleId" });
 
-Organiser.hasMany(Conference, { foreignKey: "oragniserId" });
+Organiser.hasMany(Conference, { foreignKey: "organiserId" });
 
 
 app.use(
@@ -126,7 +126,7 @@ app.get("/authors/:authorId/articles", async (req, res, next) => {
 app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
 
     try {
-        const organiser = await Organiser.findByPk(req.params.orgId, {
+        const organiser = await Organiser.findByPk(req.params.organiserId, {
             include: [Conference]
         });
         if (!organiser) {
@@ -143,8 +143,10 @@ app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
 
 app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
     try {
-        const reviewer = await Reviewer.findByPk(req.params.reviewerId);
-        if (!rec) {
+        const reviewer = await Reviewer.findByPk(req.params.reviewerId, {
+            include: [Review]
+        });
+        if (!reviewer) {
             res.status(404).json({ message: "Nu exista reviewer cu acest id" })
         }
         else {
@@ -176,10 +178,10 @@ app.delete("/authors/:idAuthor", async (req, res, next) => {
     }
 });
 
-app.delete("/reviewers/:idR", async (req, res, next) => {
+app.delete("/reviewers/:idReviewer", async (req, res, next) => {
     try {
-        const idAuthor = req.params.idAuthor;
-        const deletedCount = await Reviewer.destroy({ where: { id: idR } });
+        const idReviewer = req.params.idReviewer;
+        const deletedCount = await Reviewer.destroy({ where: { id: idReviewer } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Reviewer not found" });
@@ -192,10 +194,10 @@ app.delete("/reviewers/:idR", async (req, res, next) => {
     }
 });
 
-app.delete("/organisers/:idO", async (req, res, next) => {
+app.delete("/organisers/:idOrganiser", async (req, res, next) => {
     try {
-        const idAuthor = req.params.idAuthor;
-        const deletedCount = await Organiser.destroy({ where: { id: idO } });
+        const idOrganiser = req.params.idOrganiser;
+        const deletedCount = await Organiser.destroy({ where: { id: idOrganiser } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Organiser not found" });
@@ -208,10 +210,10 @@ app.delete("/organisers/:idO", async (req, res, next) => {
     }
 });
 
-app.delete("/conferences/:idC", async (req, res, next) => {
+app.delete("/conferences/:idConference", async (req, res, next) => {
     try {
-        const idAuthor = req.params.idAuthor;
-        const deletedCount = await Reviewer.destroy({ where: { id: idC } });
+        const idConference = req.params.idConference;
+        const deletedCount = await Conference.destroy({ where: { id: idConference } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Conference not found" });
@@ -224,10 +226,10 @@ app.delete("/conferences/:idC", async (req, res, next) => {
     }
 });
 
-app.delete("/reviews/:idR", async (req, res, next) => {
+app.delete("/reviews/:idReview", async (req, res, next) => {
     try {
-        const idAuthor = req.params.idAuthor;
-        const deletedCount = await Review.destroy({ where: { id: idR } });
+        const idReview = req.params.idReview;
+        const deletedCount = await Review.destroy({ where: { id: idReview } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Review not found" });
@@ -240,10 +242,10 @@ app.delete("/reviews/:idR", async (req, res, next) => {
     }
 });
 
-app.delete("/articles/:idA", async (req, res, next) => {
+app.delete("/articles/:idArticle", async (req, res, next) => {
     try {
-        const idAuthor = req.params.idAuthor;
-        const deletedCount = await Article.destroy({ where: { id: idA } });
+        const idArticle = req.params.idArticle;
+        const deletedCount = await Article.destroy({ where: { id: idArticle } });
 
         if (deletedCount === 0) {
             res.status(404).json({ message: "Article not found" });
@@ -411,13 +413,13 @@ app.put("/articles/:idArticle", async (req, res, next) => {
         const article = await Article.findByPk(req.params.idArticle);
         if(!article) {
             res.status(404).json({
-                message: "Organiser not found!"
+                message: "Article not found!"
             });
         }
         else {
             await article.update(req.body);
             res.status(201).json({
-                message: "Organiser updated successfully",
+                message: "Article updated successfully",
                 data: article
             });
         }
@@ -431,13 +433,13 @@ app.put("/conferences/:idConference", async (req, res, next) => {
         const conference = await Conference.findByPk(req.params.idConference);
         if(!conference) {
             res.status(404).json({
-                message: "Organiser not found!"
+                message: "Conference not found!"
             });
         }
         else {
             await conference.update(req.body);
             res.status(201).json({
-                message: "Organiser updated successfully",
+                message: "Conference updated successfully",
                 data: conference
             });
         }
@@ -451,13 +453,13 @@ app.put("/reviews/:idReview", async (req, res, next) => {
         const review = await Review.findByPk(req.params.idReview);
         if(!review) {
             res.status(404).json({
-                message: "Organiser not found!"
+                message: "Review not found!"
             });
         }
         else {
             await review.update(req.body);
             res.status(201).json({
-                message: "Organiser updated successfully",
+                message: "Reviews updated successfully",
                 data: review
             });
         }
