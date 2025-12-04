@@ -29,10 +29,6 @@ app.use(
 );
 app.use(express.json());
 
-app.use((err, req, res, next) => {
-    res.status(500).json({ message: "500 - Server Error" });
-});
-
 app.get("/create", async (req, res) => {
     await sequelize.sync({
         force: true
@@ -41,8 +37,8 @@ app.get("/create", async (req, res) => {
 });
 
 
-
-// GET METHOD prin mecanism findAll() pentru toate clasese
+//---------------------------------------------------------------------------
+// GET METHOD WITH findAll() FOR ALL MODELS
 //---------------------------------------------------------------------------
 app.get("/authors", async (req, res, next) => {
     try {
@@ -89,7 +85,6 @@ app.get("/organisers", async (req, res, next) => {
     }
 });
 
-
 app.get("/reviews", async (req, res, next) => {
     try {
         const rev = await Review.findAll();
@@ -98,8 +93,6 @@ app.get("/reviews", async (req, res, next) => {
         next(err);
     }
 });
-//---------------------------------------------------------
-
 
 
 //---------------------------------------------------------
@@ -108,7 +101,6 @@ app.get("/reviews", async (req, res, next) => {
 //Conference has a Organiser
 //Review has a reviewer
 //---------------------------------------------------------
-
 app.get("/authors/:authorId/articles", async (req, res, next) => {
     try {
         const author = await Author.findByPk(req.params.authorId,
@@ -130,7 +122,6 @@ app.get("/authors/:authorId/articles", async (req, res, next) => {
     }
 });
 
-
 app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
 
     try {
@@ -149,7 +140,6 @@ app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
     }
 });
 
-//---------------------------------------------------------
 app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.findByPk(req.params.reviewerId);
@@ -166,7 +156,8 @@ app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
 })
 
 
-// DELETE METHOD FOR ALL CLASSES BY ID
+//---------------------------------------------------------------------------
+// DELETE METHOD FOR ALL MODELS BY ID
 //---------------------------------------------------------
 app.delete("/authors/:idAuthor", async (req, res, next) => {
     try {
@@ -266,8 +257,8 @@ app.delete("/articles/:idA", async (req, res, next) => {
 
 
 
-
-// POST PENTRU TOATE CLASELE
+//---------------------------------------------------------------------------
+// POST METHODS FOR ALL MODELS
 //---------------------------------------------------------------------------
 app.post("/reviewer", async (req, res, next) => {
     try {
@@ -340,9 +331,139 @@ app.post("/organiser", async (req, res, next) => {
     }
 })
 
+
+//---------------------------------------------------------------------------
+// PUT METHODS FOR ALL MODELS
+//---------------------------------------------------------------------------
+
+app.put("/authors/:idAuthor", async (req, res, next) => {
+    try {
+        const author = await Author.findByPk(req.params.idAuthor);
+        if(!author) {
+            res.status(404).json({
+                message: "Author not found!"
+            });
+        }
+        else {
+            await author.update(req.body);
+            res.status(201).json({
+                message: "Author updated successfully",
+                data: author
+            });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
+app.put("/reviewers/:idReviewer", async (req, res, next) => {
+    try {
+        const reviewer = await Reviewer.findByPk(req.params.idReviewer);
+        if(!reviewer) {
+            res.status(404).json({
+                message: "Reviewer not found!"
+            });
+        }
+        else {
+            await reviewer.update(req.body);
+            res.status(201).json({
+                message: "Reviewer updated successfully",
+                data: reviewer
+            });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
+app.put("/organisers/:idOrganiser", async (req, res, next) => {
+    try {
+        const organiser = await Organiser.findByPk(req.params.idOrganiser);
+        if(!organiser) {
+            res.status(404).json({
+                message: "Organiser not found!"
+            });
+        }
+        else {
+            await organiser.update(req.body);
+            res.status(201).json({
+                message: "Organiser updated successfully",
+                data: organiser
+            });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
+app.put("/articles/:idArticle", async (req, res, next) => {
+    try {
+        const article = await Article.findByPk(req.params.idArticle);
+        if(!article) {
+            res.status(404).json({
+                message: "Organiser not found!"
+            });
+        }
+        else {
+            await article.update(req.body);
+            res.status(201).json({
+                message: "Organiser updated successfully",
+                data: article
+            });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
+app.put("/conferences/:idConference", async (req, res, next) => {
+    try {
+        const conference = await Conference.findByPk(req.params.idConference);
+        if(!conference) {
+            res.status(404).json({
+                message: "Organiser not found!"
+            });
+        }
+        else {
+            await conference.update(req.body);
+            res.status(201).json({
+                message: "Organiser updated successfully",
+                data: conference
+            });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
+app.put("/reviews/:idReview", async (req, res, next) => {
+    try {
+        const review = await Review.findByPk(req.params.idReview);
+        if(!review) {
+            res.status(404).json({
+                message: "Organiser not found!"
+            });
+        }
+        else {
+            await review.update(req.body);
+            res.status(201).json({
+                message: "Organiser updated successfully",
+                data: review
+            });
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
 //---------------------------------------------------------------------------
 // METODA DE PORNIRE A SERVERULUI SI ASCULTAREA CERERILOR HTTP
 //---------------------------------------------------------------------------
 app.listen(port, () => {
     console.log("Server running on http://localhost:" + port);
+});
+
+
+app.use((err, req, res, next) => {
+    res.status(500).json({ message: "500 - Server Error" });
 });
