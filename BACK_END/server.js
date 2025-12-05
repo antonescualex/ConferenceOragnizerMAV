@@ -10,15 +10,54 @@ const Article = require("./models/article");
 const Review = require("./models/review");
 const Conference = require("./models/conference");
 
+
+/**
+ * Relatia intre modelele: Author si Article
+ * 
+ * Descriere:
+ * Un autor are mai multe articole.
+ * Fiecare articol apartine unui singur autor.
+ */
 Author.hasMany(Article, { foreignKey: "authorId" });
 Article.belongsTo(Author, { foreignKey: "authorId" });
+
+/**
+ * Relatia intre modelele: Conference si Article
+ * 
+ * Descriere:
+ * O conferinta are mai multe articole.
+ * Fiecare articol apartine unei singure conferinte.
+ */
 Conference.hasMany(Article, { foreignKey: "conferenceId" });
 Article.belongsTo(Conference, { foreignKey: "conferenceId" });
+
+/**
+ * Relatia intre modelele: Reviewer si Review
+ * 
+ * Descriere:
+ * Un reviewer scrie mai multe review-uri.
+ * Fiecare review apartine unui singur reviewer.
+ */
 Reviewer.hasMany(Review, { foreignKey: "reviewerId" });
 Review.belongsTo(Reviewer, { foreignKey: "reviewerId" });
+
+/**
+ * Relatia intre modelele: Article si Review
+ * 
+ * Descriere:
+ * Un articol are mai multe review-uri.
+ * Fiecare review apartine unui singur articol.
+ */
 Article.hasMany(Review, { foreignKey: "articleId" });
 Review.belongsTo(Article, { foreignKey: "articleId" });
 
+/**
+ * Relatia intre modelele: Organiser si Conference
+ * 
+ * Descriere:
+ * Un organizator organizeaza mai multe conferinte.
+ * Fiecare conferinta apartine unui singur organizator.
+ */
 Organiser.hasMany(Conference, { foreignKey: "organiserId" });
 Conference.belongsTo(Organiser, { foreignKey: "organiserId"});
 
@@ -31,8 +70,12 @@ app.use(
 app.use(express.json());
 
 
-// METODA CARE RESETEAZA BAZA DE DATE SI RECEREAZA TOATE TABELELE DEFINITE IN SEQUELIZE
-//---------------------------------------------------------------------------
+/**
+ * GET /create
+ * 
+ * Descriere:
+ * Reseteaza si creeaza baza de date si toate tabelele acesteia.
+ */
 app.get("/create", async (req, res) => {
     await sequelize.sync({
         force: true
@@ -42,9 +85,15 @@ app.get("/create", async (req, res) => {
 
 
 //---------------------------------------------------------------------------
-// GET METHOD BY ID FOR ALL MODELS
+// GET - dupa ID pentru toate modelele
 //---------------------------------------------------------------------------
 
+/**
+ * GET /authors/:idAuthor
+ * 
+ * Descriere:
+ * Returneaza un autor dupa ID.
+ */
 app.get("/authors/:idAuthor", async (req, res, next) => {
     try {
         const author = await Author.findByPk(req.params.idAuthor);
@@ -60,6 +109,12 @@ app.get("/authors/:idAuthor", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /reviewers/:idReviewer
+ * 
+ * Descriere:
+ * Returneaza un reviewer dupa ID.
+ */
 app.get("/reviewers/:idReviewer", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.findByPk(req.params.idReviewer);
@@ -75,6 +130,12 @@ app.get("/reviewers/:idReviewer", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /articles/:idArticle
+ * 
+ * Descriere:
+ * Returneaza un articol dupa ID.
+ */
 app.get("/articles/:idArticle", async (req, res, next) => {
     try {
         const article = await Article.findByPk(req.params.idArticle);
@@ -90,6 +151,12 @@ app.get("/articles/:idArticle", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /conferences/:idConference
+ * 
+ * Descriere:
+ * Returneaza o conferinta dupa ID.
+ */
 app.get("/conferences/:idConference", async (req, res, next) => {
     try {
         const conference = await Conference.findByPk(req.params.idConference);
@@ -105,6 +172,12 @@ app.get("/conferences/:idConference", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /organisers/:idOrganiser
+ * 
+ * Descriere:
+ * Returneaza un organizator dupa ID.
+ */
 app.get("/organisers/:idOrganiser", async (req, res, next) => {
     try {
         const organiser = await Organiser.findByPk(req.params.idOrganiser);
@@ -120,6 +193,12 @@ app.get("/organisers/:idOrganiser", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /reviews/:idReview
+ * 
+ * Descriere:
+ * Returneaza un review dupa ID.
+ */
 app.get("/reviews/:idReview", async (req, res, next) => {
     try {
         const review = await Review.findByPk(req.params.idReview);
@@ -137,8 +216,15 @@ app.get("/reviews/:idReview", async (req, res, next) => {
 
 
 //---------------------------------------------------------------------------
-// GET METHOD WITH findAll() FOR ALL MODELS
+// GET - pentru toate modelele
 //---------------------------------------------------------------------------
+
+/**
+ * GET /authors
+ * 
+ * Descriere:
+ * Returneaza toti autorii.
+ */
 app.get("/authors", async (req, res, next) => {
     try {
         const authors = await Author.findAll();
@@ -148,6 +234,12 @@ app.get("/authors", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /reviewers
+ * 
+ * Descriere:
+ * Returneaza toti reviewer-ii.
+ */
 app.get("/reviewers", async (req, res, next) => {
     try {
         const reviewers = await Reviewer.findAll();
@@ -157,6 +249,12 @@ app.get("/reviewers", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /articles
+ * 
+ * Descriere:
+ * Returneaza toate articolele.
+ */
 app.get("/articles", async (req, res, next) => {
     try {
         const articles = await Article.findAll();
@@ -166,6 +264,12 @@ app.get("/articles", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /conferences
+ * 
+ * Descriere:
+ * Returneaza toate conferintele.
+ */
 app.get("/conferences", async (req, res, next) => {
     try {
         const conferences = await Conference.findAll();
@@ -175,6 +279,12 @@ app.get("/conferences", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /organisers
+ * 
+ * Descriere:
+ * Returneaza toti organizatorii.
+ */
 app.get("/organisers", async (req, res, next) => {
     try {
         const organisers = await Organiser.findAll();
@@ -184,6 +294,12 @@ app.get("/organisers", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /reviews
+ * 
+ * Descriere:
+ * Returneaza toate review-rile.
+ */
 app.get("/reviews", async (req, res, next) => {
     try {
         const reviews = await Review.findAll();
@@ -195,11 +311,16 @@ app.get("/reviews", async (req, res, next) => {
 
 
 //---------------------------------------------------------
-//GET bazat pe logica bazei de date
-//Article has an Author
-//Conference has a Organiser
-//Review has a reviewer
+//GET - bazat pe logica bazei de date
+//      in functie de relatiile dintre tabele
 //---------------------------------------------------------
+
+/**
+ * GET /authors/:authorId/articles
+ * 
+ * Descriere:
+ * Returneaza articolele unui autor in functie de ID-ul acestuia.
+ */
 app.get("/authors/:authorId/articles", async (req, res, next) => {
     try {
         const author = await Author.findByPk(req.params.authorId, {
@@ -209,7 +330,6 @@ app.get("/authors/:authorId/articles", async (req, res, next) => {
             res.status(404).json({ message: "Nu exista autor cu acest id" })
         }
         else {
-            //const articles=author.articles;
             res.status(202).json(author.articles);
         }
 
@@ -219,6 +339,12 @@ app.get("/authors/:authorId/articles", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /organisers/:organiserId/conferences
+ * 
+ * Descriere:
+ * Returneaza conferintele unui organizator in functie de ID-ul acestuia.
+ */
 app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
 
     try {
@@ -237,6 +363,12 @@ app.get("/organisers/:organiserId/conferences", async (req, res, next) => {
     }
 });
 
+/**
+ * GET /reviewers/:reviewerId/reviews
+ * 
+ * Descriere:
+ * Returneaza review-rile unui reviewer in functie de ID-ul acestuia.
+ */
 app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.findByPk(req.params.reviewerId, {
@@ -254,10 +386,63 @@ app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
     }
 })
 
+/**
+ * GET /conferences/:conferenceId/articles
+ * 
+ * Descriere:
+ * Returneaza articolele unei conferinte in functie de ID-ul acesteia.
+ */
+app.get("/conferences/:conferenceId/articles", async (req, res, next) => {
+    try {
+        const conference = await Conference.findByPk(req.params.conferenceId, {
+            include: [Article]
+        });
+        if (!conference) {
+            res.status(404).json({ message: "Nu exista conferinta cu acest id" })
+        }
+        else {
+            res.status(202).json(conference.articles);
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+/**
+ * GET /articles/:articleId/reviews
+ * 
+ * Descriere:
+ * Returneaza review-rile unui articol in functie de ID-ul acestuia.
+ */
+app.get("/articles/:articleId/reviews", async (req, res, next) => {
+    try {
+        const article = await Article.findByPk(req.params.articleId, {
+            include: [Review]
+        });
+        if (!article) {
+            res.status(404).json({ message: "Nu exista articol cu acest id" })
+        }
+        else {
+            res.status(202).json(article.reviews);
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
 
 //---------------------------------------------------------------------------
-// DELETE METHOD FOR ALL MODELS BY ID
+// DELETE pentru toate modelele dupa ID
 //---------------------------------------------------------
+
+/**
+ * DELETE /authors/:idAuthor
+ * 
+ * Descriere:
+ * Sterge un autor dupa ID.
+ */
 app.delete("/authors/:idAuthor", async (req, res, next) => {
     try {
         const idAuthor = req.params.idAuthor;
@@ -274,6 +459,12 @@ app.delete("/authors/:idAuthor", async (req, res, next) => {
     }
 });
 
+/**
+ * DELETE /reviewers/:idReviewer
+ * 
+ * Descriere:
+ * Sterge un reviewer dupa ID.
+ */
 app.delete("/reviewers/:idReviewer", async (req, res, next) => {
     try {
         const idReviewer = req.params.idReviewer;
@@ -290,6 +481,12 @@ app.delete("/reviewers/:idReviewer", async (req, res, next) => {
     }
 });
 
+/**
+ * DELETE /organisers/:idOrganiser
+ * 
+ * Descriere:
+ * Sterge un organizator dupa ID.
+ */
 app.delete("/organisers/:idOrganiser", async (req, res, next) => {
     try {
         const idOrganiser = req.params.idOrganiser;
@@ -306,6 +503,12 @@ app.delete("/organisers/:idOrganiser", async (req, res, next) => {
     }
 });
 
+/**
+ * DELETE /conferences/:idConference
+ * 
+ * Descriere:
+ * Sterge o conferinta dupa ID.
+ */
 app.delete("/conferences/:idConference", async (req, res, next) => {
     try {
         const idConference = req.params.idConference;
@@ -322,6 +525,12 @@ app.delete("/conferences/:idConference", async (req, res, next) => {
     }
 });
 
+/**
+ * DELETE /reviews/:idReview
+ * 
+ * Descriere:
+ * Sterge un review dupa ID.
+ */
 app.delete("/reviews/:idReview", async (req, res, next) => {
     try {
         const idReview = req.params.idReview;
@@ -338,6 +547,12 @@ app.delete("/reviews/:idReview", async (req, res, next) => {
     }
 });
 
+/**
+ * DELETE /articles/:idArticle
+ * 
+ * Descriere:
+ * Sterge un articol dupa ID.
+ */
 app.delete("/articles/:idArticle", async (req, res, next) => {
     try {
         const idArticle = req.params.idArticle;
@@ -359,6 +574,18 @@ app.delete("/articles/:idArticle", async (req, res, next) => {
 //---------------------------------------------------------------------------
 // POST METHODS FOR ALL MODELS
 //---------------------------------------------------------------------------
+
+/**
+ * POST /reviewer
+ * 
+ * Descriere:
+ * Creeaza un reviewer nou.
+ * 
+ * Body:
+ *  - fullName: STRING
+ *  - email: STRING
+ *  - role: STRING
+ */
 app.post("/reviewer", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.create(req.body);
@@ -371,7 +598,18 @@ app.post("/reviewer", async (req, res, next) => {
     }
 });
 
-
+/**
+ * POST /conference
+ * 
+ * Descriere:
+ * Creeaza o conferinta noua.
+ * 
+ * Body:
+ *  - name: STRING
+ *  - description: STRING | NULL
+ *  - startDate: DATE
+ *  - endDate: DATE
+ */
 app.post("/conference", async (req, res, next) => {
     try {
         const conference = await Conference.create(req.body);
@@ -384,8 +622,17 @@ app.post("/conference", async (req, res, next) => {
     }
 });
 
-
-
+/**
+ * POST /author
+ * 
+ * Descriere:
+ * Creeaza un autor nou.
+ * 
+ * Body:
+ *  - fullName: STRING
+ *  - email: STRING
+ *  - role: STRING
+ */
 app.post("/author", async (req, res, next) => {
     try {
         const author = await Author.create(req.body);
@@ -398,6 +645,19 @@ app.post("/author", async (req, res, next) => {
     }
 });
 
+/**
+ * POST /article
+ * 
+ * Descriere:
+ * Creeaza un articol nou.
+ * 
+ * Body:
+ *  - title: STRING
+ *  - status: ENUM {"SUBMITTED", "UNDER_REVIEW", "ACCEPTED", "REJECTED"}
+ *            IMPLICIT: "SUBMITTED"
+ *  - version: INT
+ *             IMPLICIT: 1
+ */
 app.post("/article", async (req, res, next) => {
     try {
         const article = await Article.create(req.body);
@@ -411,6 +671,19 @@ app.post("/article", async (req, res, next) => {
     }
 });
 
+/**
+ * POST /review
+ * 
+ * Descriere:
+ * Creeaza un review nou.
+ * 
+ * Body:
+ *  - decision: ENUM {"PENDING", "ACCEPT", "REJECT", "MODIFICATION_REQUIRED"}
+ *              IMPLICIT: PENDING
+ *  - comments: STRING | NULL
+ *  - grade: FLOAT 
+ *           INTERVAL PERMIS: 0 - 5
+ */
 app.post("/review", async (req, res, next) => {
     try {
         const review = await Review.create(req.body);
@@ -425,6 +698,17 @@ app.post("/review", async (req, res, next) => {
     }
 });
 
+/**
+ * POST /organiser
+ * 
+ * Descriere:
+ * Creeaza un organizator nou.
+ * 
+ * Body:
+ *  - fullName: STRING
+ *  - email: STRING
+ *  - role: STRING
+ */
 app.post("/organiser", async (req, res, next) => {
     try {
         const organiser = await Organiser.create(req.body);
@@ -444,6 +728,17 @@ app.post("/organiser", async (req, res, next) => {
 // PUT METHODS FOR ALL MODELS
 //---------------------------------------------------------------------------
 
+/**
+ * PUT /authors/:idAuthor
+ * 
+ * Descriere:
+ * Actualizeaza datele unui autor existent in functie de ID.
+ * 
+ * Body:
+ *  - fullName: STRING
+ *  - email: STRING
+ *  - role: STRING
+ */
 app.put("/authors/:idAuthor", async (req, res, next) => {
     try {
         const author = await Author.findByPk(req.params.idAuthor);
@@ -464,6 +759,17 @@ app.put("/authors/:idAuthor", async (req, res, next) => {
     }
 });
 
+/**
+ * PUT /reviewers/:idReviewer
+ * 
+ * Descriere:
+ * Actualizeaza datele unui reviewer existent in functie de ID.
+ * 
+ * Body:
+ *  - fullName: STRING
+ *  - email: STRING
+ *  - role: STRING
+ */
 app.put("/reviewers/:idReviewer", async (req, res, next) => {
     try {
         const reviewer = await Reviewer.findByPk(req.params.idReviewer);
@@ -484,6 +790,17 @@ app.put("/reviewers/:idReviewer", async (req, res, next) => {
     }
 });
 
+/**
+ * PUT /organisers/:idOrganiser
+ * 
+ * Descriere:
+ * Actualizeaza datele unui organizator existent in functie de ID.
+ * 
+ * Body:
+ *  - fullName: STRING
+ *  - email: STRING
+ *  - role: STRING
+ */
 app.put("/organisers/:idOrganiser", async (req, res, next) => {
     try {
         const organiser = await Organiser.findByPk(req.params.idOrganiser);
@@ -504,6 +821,19 @@ app.put("/organisers/:idOrganiser", async (req, res, next) => {
     }
 });
 
+/**
+ * PUT /articles/:idArticle
+ * 
+ * Descriere:
+ * Actualizeaza datele unui articol existent in functie de ID.
+ * 
+ * Body:
+ *  - title: STRING
+ *  - status: ENUM {"SUBMITTED", "UNDER_REVIEW", "ACCEPTED", "REJECTED"}
+ *            IMPLICIT: "SUBMITTED"
+ *  - version: INT
+ *             IMPLICIT: 1
+ */
 app.put("/articles/:idArticle", async (req, res, next) => {
     try {
         const article = await Article.findByPk(req.params.idArticle);
@@ -524,6 +854,19 @@ app.put("/articles/:idArticle", async (req, res, next) => {
     }
 });
 
+
+/**
+ * PUT /conferences/:idConference
+ * 
+ * Descriere:
+ * Actualizeaza datele unei conferinte existente in functie de ID.
+ * 
+ * Body:
+ *  - name: STRING
+ *  - description: STRING | NULL
+ *  - startDate: DATE
+ *  - endDate: DATE
+ */
 app.put("/conferences/:idConference", async (req, res, next) => {
     try {
         const conference = await Conference.findByPk(req.params.idConference);
@@ -544,6 +887,19 @@ app.put("/conferences/:idConference", async (req, res, next) => {
     }
 });
 
+/**
+ * PUT /reviews/:idReview
+ * 
+ * Descriere:
+ * Actualizeaza datele unui review existent in functie de ID.
+ * 
+ * Body:
+ *  - decision: ENUM {"PENDING", "ACCEPT", "REJECT", "MODIFICATION_REQUIRED"}
+ *              IMPLICIT: PENDING
+ *  - comments: STRING | NULL
+ *  - grade: FLOAT 
+ *           INTERVAL PERMIS: 0 - 5
+ */
 app.put("/reviews/:idReview", async (req, res, next) => {
     try {
         const review = await Review.findByPk(req.params.idReview);
@@ -564,16 +920,18 @@ app.put("/reviews/:idReview", async (req, res, next) => {
     }
 });
 
-//---------------------------------------------------------------------------
-// METODA DE PORNIRE A SERVERULUI SI ASCULTAREA CERERILOR HTTP
-//---------------------------------------------------------------------------
+/**
+ * Descriere:
+ * Metoda care porneste serverul si permite ascultarea cererilor HTTP.
+ */
 app.listen(port, () => {
     console.log("Server running on http://localhost:" + port);
 });
 
-//---------------------------------------------------------------------------
-// METODA CE CAPTEAZA ORICE EROARE A SERVERULUI
-//---------------------------------------------------------------------------
+/**
+ * Descriere:
+ * Metoda care capteaza orice eroare interna a serverului.
+ */
 app.use((err, req, res, next) => {
     res.status(500).json({ message: "500 - Server Error" });
 });
