@@ -9,7 +9,8 @@ const Organiser = require("./models/organiser");
 const Article = require("./models/article");
 const Review = require("./models/review");
 const Conference = require("./models/conference");
-
+const cors = require("cors");
+app.use(cors());
 
 /**
  * Relatia intre modelele: Author si Article
@@ -68,6 +69,7 @@ app.use(
     })
 );
 app.use(express.json());
+
 
 
 /**
