@@ -1,0 +1,12 @@
+.organiser-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.buton-adaugare-conferinta {
+    background-color: #7272bf;
+    color: #FFFFFF;
+    border-radius: 10px;
+    height: 50px;
+    margin-top: 20px;
+}
