@@ -5,14 +5,8 @@ import RegisterPage from "./RegisterPage/RegisterPage";
 import OrganiserPage from "./OrganiserPage/OrganiserPage";
 import AuthorPage from "./AuthorPage/AuthorPage";
 
-
 function App() {
-  return (
-    <>
-      {/* <OrganiserPage /> */}
-      <AuthorPage />
-    </>
-  );
+  return <></>;
 }
 
 export default App;
