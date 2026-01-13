@@ -1,7 +1,7 @@
 import React from "react";
 import "./OrganiserPage.css";
 import WelcomeBar from "../WelcomeBar/WelcomeBar.jsx";
-import ConferenceContainer from "./components/ConferenceContainer/ConferenceContainer.jsx";
+import ConferenceContainer from "../Conference/ConferenceContainer/ConferenceContainer.jsx";
 
 function OrganiserPage() {
   return (
