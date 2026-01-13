@@ -1,6 +1,9 @@
 const initialState = {
   data: [],
   error: null,
+  conferenceArticle:[],
+  created:null,
+  error:null
 };
 
 export default function conferenceReducer(state = initialState, action) {

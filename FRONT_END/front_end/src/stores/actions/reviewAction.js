@@ -2,7 +2,7 @@ import {req} from "../actions/authentificationAction"
 
 export function fetchReviewsPerReviewer(reviewerId){
     return {
-        type:"FETCH_REVIEWS",
+        type:"PERSONAL_REVIEWS",
         payload:req(`/reviewers/${reviewerId}/reviews`)
     
     }
@@ -10,7 +10,7 @@ export function fetchReviewsPerReviewer(reviewerId){
 
 export function fetchReviewsPerArticle(articleId){
     return {
-        type:"FETCH_REVIEWS",
+        type:"ARTICLE_REVIEWS",
         payload:req(`/articles/${articleId}/reviews`)
     
     }

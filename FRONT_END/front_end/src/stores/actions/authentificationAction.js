@@ -30,7 +30,7 @@ function endPointInFunctieDeRol(role) {
 
 export function login(role, fullName, email) {
     const work = async () => {
-        const { list, create } = endpointsByRole(role);
+        const { list, create } = endPointInFunctieDeRol(role);
 
         const users = await req(list);
         const existing = (users || []).find(
