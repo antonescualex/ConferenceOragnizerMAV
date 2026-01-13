@@ -5,10 +5,22 @@ const initialState = {
 
 export default function articleReducer(state = initialState, action) {
   switch (action.type) {
-    case "ARTICLES_FULLFILLED":
-      return { ...state, data: action.payload };
-    case "ARTICLES_REJECTED":
+    case "FETCH_MY_ARTICLES_FULFILLED":
+    case "FETCH_CONFERENCE_ARTICLES_FULFILLED":
+      return { ...state, data: action.payload, error: null };
+
+    case "FETCH_ARTICLE_FULFILLED":
+      return { ...state, selected: action.payload, error: null };
+
+    case "FETCH_REVIEWS_FULFILLED":
+      return { ...state, reviews: action.payload, error: null };
+
+    case "FETCH_MY_ARTICLES_REJECTED":
+    case "FETCH_CONFERENCE_ARTICLES_REJECTED":
+    case "FETCH_ARTICLE_REJECTED":
+    case "FETCH_REVIEWS_REJECTED":
       return { ...state, error: action.payload };
+
     default:
       return state;
   }
