@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../stores/actions/authAction";
-import "../LoginPage/LoginPage.css";
+import "./RegisterPage.css";
 
 export default function RegisterPage() {
   const dispatch = useDispatch();
