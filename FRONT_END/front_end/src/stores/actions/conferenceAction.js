@@ -43,7 +43,7 @@ export function setConferenceReviewers(conferenceId, reviewerIds) {
     type: "SET_CONFERENCE_REVIEWERS",
     payload: req(`/conferences/${conferenceId}/reviewers`, {
       method: "POST",
-      body: JSON.stringify({ reviewerIds }),
+      body: JSON.stringify(reviewerIds),
     }),
   };
 }

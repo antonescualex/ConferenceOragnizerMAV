@@ -26,27 +26,37 @@ function endPointInFunctieDeRol(role) {
   return { list, create };
 }
 
-export function login(role, fullName, email) {
-  const work = async () => {
-    const { list, create } = endPointInFunctieDeRol(role);
+// export function login(role, fullName, email) {
+//   const work = async () => {
+//     const { list, create } = endPointInFunctieDeRol(role);
 
-    const users = await req(list);
-    const existing = (users || []).find(
-      (u) => (u.email || "").toLowerCase() === email.toLowerCase()
-    );
+//     const users = await req(list);
+//     const existing = (users || []).find(
+//       (u) => (u.email || "").toLowerCase() === email.toLowerCase()
+//     );
 
-    if (existing) return existing;
+//     if (existing) return existing;
 
-    const created = await req(create, {
-      method: "POST",
-      body: JSON.stringify({ role, fullName, email }),
-    });
+//     const created = await req(create, {
+//       method: "POST",
+//       body: JSON.stringify({ email }),
+//     });
 
-    return created.data || created;
-  };
+//     return created.data || created;
+//   };
 
+//   return {
+//     type: "AUTH_LOGIN",
+//     payload: work(),
+//   };
+// }
+
+export function login(email) {
   return {
     type: "AUTH_LOGIN",
-    payload: work(),
+    payload: req("/login", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
   };
 }

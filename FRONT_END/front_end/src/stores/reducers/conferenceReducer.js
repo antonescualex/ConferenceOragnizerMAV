@@ -19,10 +19,19 @@ export default function conferenceReducer(state = initialState, action) {
       };
 
     case "FETCH_CONFERENCE_ARTICLES_FULFILLED":
-      return { ...state, conferenceArticle: action.payload, error: null };
+      return {
+        ...state,
+        conferenceArticle: action.payload.reviewers || action.payload,
+        error: null,
+      };
+
     case "FETCH_CONFERENCE_REVIEWERS_FULFILLED":
     case "SET_CONFERENCE_REVIEWERS_FULFILLED":
-      return { ...state, conferenceReviewers: action.payload, error: null };
+      return {
+        ...state,
+        conferenceReviewers: action.payload.reviewers || action.payload,
+        error: null,
+      };
 
     case "FETCH_CONFERENCE_REJECTED":
     case "FETCH_CONFERENCES_REJECTED":

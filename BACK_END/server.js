@@ -101,6 +101,44 @@ app.get("/create", async (req, res) => {
   res.json({ message: "Database created!" });
 });
 
+/**
+ * POST /login
+ *
+ * Descriere:
+ * Autentifica autilizatorul dupa email
+ */
+app.post("/login", async (req, res, next) => {
+  try {
+    const email = (req.body?.email || "").toLowerCase();
+    if (!email) {
+      return res.status(400).json({ message: "Email required" });
+    }
+
+    let user = await Organiser.findOne({ where: { email } });
+    let role = "ORGANISER";
+
+    if (!user) {
+      user = await Reviewer.findOne({ where: { email } });
+      role = "REVIEWER";
+    }
+    if (!user) {
+      user = await Author.findOne({ where: { email } });
+      role = "AUTHOR";
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const data = user.toJSON ? user.toJSON() : { ...user };
+    if (!data.role) data.role = role;
+
+    return res.status(200).json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
 //---------------------------------------------------------------------------
 // GET - dupa ID pentru toate modelele
 //---------------------------------------------------------------------------
