@@ -2,7 +2,10 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import store from "../stores/store";
 import LoginPage from "./LoginPage/LoginPage";
+import RegisterPage from "./RegisterPage/RegisterPage";
 import OrganiserDashboard from "./OrganiserDashboard/OrganiserDashboard";
+import ReviewerDashboard from "./ReviewerDashboard/ReviewerDashboard";
+import AuthorDashboard from "./AuthorDashboard/AuthorDashboard";
 import "./App.css";
 
 function RoleRouter() {
@@ -11,6 +14,8 @@ function RoleRouter() {
 
   if (!user) return <LoginPage />;
   if (role === "ORGANISER") return <OrganiserDashboard />;
+  if (role === "REVIEWER") return <ReviewerDashboard />;
+  if (role === "AUTHOR") return <AuthorDashboard />;
 
   return (
     <div style={{ padding: 24 }}>Dashboard pentru {role} nu e implementat.</div>
@@ -23,6 +28,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<RoleRouter />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

@@ -60,3 +60,16 @@ export function login(email) {
     }),
   };
 }
+
+export function registerUser({ fullName, email, role }) {
+  const normalizedRole = (role || "").toUpperCase();
+  const { create } = endPointInFunctieDeRol(normalizedRole);
+
+  return {
+    type: "AUTH_REGISTER",
+    payload: req(create, {
+      method: "POST",
+      body: JSON.stringify({ fullName, email, role: normalizedRole }),
+    }).then((ret) => ret.data || ret),
+  };
+}
