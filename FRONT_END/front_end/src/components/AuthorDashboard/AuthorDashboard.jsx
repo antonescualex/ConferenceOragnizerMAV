@@ -143,7 +143,9 @@ export default function AuthorDashboard() {
       <div className="dash">
         <div className="topbar">
           <div className="topbar-welcome">
-            <div className="topbar-title">Bine ai venit, {author?.fullName || "Author"} | Autor</div>
+            <div className="topbar-title">
+              Bine ai venit, {author?.fullName || "Author"} | Autor
+            </div>
           </div>
           <div className="topbar-email">
             {author?.email || "email@exemplu.ro"}
@@ -174,8 +176,8 @@ export default function AuthorDashboard() {
                       <p className="article-desc">{conf.description}</p>
                       <div className="article-meta">
                         <span>
-                          {new Date(conf.startDate).toLocaleDateString("ro-RO")} -{" "}
-                          {new Date(conf.endDate).toLocaleDateString("ro-RO")}
+                          {new Date(conf.startDate).toLocaleDateString("ro-RO")}{" "}
+                          - {new Date(conf.endDate).toLocaleDateString("ro-RO")}
                         </span>
                       </div>
                       <button
@@ -200,7 +202,9 @@ export default function AuthorDashboard() {
             {loading ? (
               <p className="empty-state">Se ÆRncarcŽ?...</p>
             ) : registeredConferences.length === 0 ? (
-              <p className="empty-state">Nu esti inscris la nicio conferinta.</p>
+              <p className="empty-state">
+                Nu esti inscris la nicio conferinta.
+              </p>
             ) : (
               <div className="articles-list">
                 {registeredConferences.map((conf) => (
@@ -222,7 +226,10 @@ export default function AuthorDashboard() {
             </div>
 
             {!showCreateForm ? (
-              <button className="btn-primary" onClick={() => setShowCreateForm(true)}>
+              <button
+                className="btn-primary"
+                onClick={() => setShowCreateForm(true)}
+              >
                 + Articol Nou
               </button>
             ) : (
@@ -298,13 +305,22 @@ export default function AuthorDashboard() {
                   >
                     <div className="article-header">
                       <h3>{article.title}</h3>
-                      <span className={`status ${getStatusClass(article.status)}`}>
+                      <span
+                        className={`status ${getStatusClass(article.status)}`}
+                      >
                         {article.status || "Trimis"}
                       </span>
                     </div>
-                    <p className="article-desc">{article.content?.substring(0, 100)}...</p>
+                    <p className="article-desc">
+                      {article.content?.substring(0, 100)}...
+                    </p>
                     <div className="article-meta">
-                      <span>📅 {new Date(article.createdAt).toLocaleDateString("ro-RO")}</span>
+                      <span>
+                        📅{" "}
+                        {new Date(article.createdAt).toLocaleDateString(
+                          "ro-RO"
+                        )}
+                      </span>
                       <span>⭐ {article.reviews?.length || 0} recenzii</span>
                     </div>
                     <button className="btn-sm">Vezi detalii</button>
@@ -331,7 +347,9 @@ export default function AuthorDashboard() {
         <div className="panel">
           <div className="panel-head">
             <h2>Detalii Articol</h2>
-            <span className={`status ${getStatusClass(selectedArticle?.status)}`}>
+            <span
+              className={`status ${getStatusClass(selectedArticle?.status)}`}
+            >
               {selectedArticle?.status || "Trimis"}
             </span>
           </div>
@@ -346,10 +364,13 @@ export default function AuthorDashboard() {
               <div className="detail-meta">
                 <div>
                   <strong>Data crearii:</strong>{" "}
-                  {new Date(selectedArticle.createdAt).toLocaleDateString("ro-RO")}
+                  {new Date(selectedArticle.createdAt).toLocaleDateString(
+                    "ro-RO"
+                  )}
                 </div>
                 <div>
-                  <strong>Conferinta:</strong> {selectedArticle.conference?.name || "N/A"}
+                  <strong>Conferinta:</strong>{" "}
+                  {selectedArticle.conference?.name || "N/A"}
                 </div>
               </div>
             </div>
@@ -380,7 +401,11 @@ export default function AuthorDashboard() {
                     <span className="rating">⭐ {review.rating}/10</span>
                   </div>
                   <p className="review-content">{review.comment}</p>
-                  <span className={`review-status ${getReviewStatus(review.status)}`}>
+                  <span
+                    className={`review-status ${getReviewStatus(
+                      review.status
+                    )}`}
+                  >
                     {review.status || "Completă"}
                   </span>
                 </div>
