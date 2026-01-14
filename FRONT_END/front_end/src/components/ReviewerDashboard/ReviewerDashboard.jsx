@@ -182,7 +182,7 @@ export default function ReviewerDashboard() {
                     <p className="card-desc">{conf.description}</p>
                     <div className="card-meta">
                       <span>
-                        📅{" "}
+                        {" "}
                         {new Date(conf.startDate).toLocaleDateString("ro-RO")}
                       </span>
                       <span>→</span>

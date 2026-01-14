@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { req } from "../../stores/actions/authAction";
 import "./AuthorDashboard.css";
@@ -316,12 +316,12 @@ export default function AuthorDashboard() {
                     </p>
                     <div className="article-meta">
                       <span>
-                        📅{" "}
+                        {" "}
                         {new Date(article.createdAt).toLocaleDateString(
                           "ro-RO"
                         )}
                       </span>
-                      <span>⭐ {article.reviews?.length || 0} recenzii</span>
+                      <span> {article.reviews?.length || 0} recenzii</span>
                     </div>
                     <button className="btn-sm">Vezi detalii</button>
                   </div>
@@ -401,12 +401,16 @@ export default function AuthorDashboard() {
                         {new Date(review.createdAt).toLocaleDateString("ro-RO")}
                       </p>
                     </div>
-                    <span className="rating">{review.decision || "PENDING"}</span>
+                    <span className="rating">
+                      {review.decision || "PENDING"}
+                    </span>
                   </div>
                   <p className="review-content">{review.comments}</p>
-                  <span className={`review-status ${getReviewStatus(
-                    review.decision
-                  )}`}>
+                  <span
+                    className={`review-status ${getReviewStatus(
+                      review.decision
+                    )}`}
+                  >
                     {review.decision || "PENDING"}
                   </span>
                 </div>
@@ -434,6 +438,3 @@ function getReviewStatus(status) {
   if (normalized === "REJECT") return "rejected";
   return "pending";
 }
-
-
-
