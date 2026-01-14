@@ -17,6 +17,53 @@ const emptyForm = {
   endDate: "",
 };
 
+function formatDate(value) {
+  if (!value) return "";
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toLocaleDateString("ro-RO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+  const asString = String(value);
+  if (asString.includes("T")) {
+    const parsed = new Date(asString);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toLocaleDateString("ro-RO", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    }
+  }
+  const isoDateOnly = asString.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDateOnly) {
+    return `${isoDateOnly[3]}.${isoDateOnly[2]}.${isoDateOnly[1]}`;
+  }
+  const isoMatch = asString.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1]}`;
+  }
+  const dotMatch = asString.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (dotMatch) {
+    const month = dotMatch[1];
+    const day = dotMatch[2];
+    const year = dotMatch[3];
+    return `${day}.${month}.${year}`;
+  }
+  const parsed = new Date(asString);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toLocaleDateString("ro-RO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  }
+  return asString;
+}
+
 export default function OrganiserDashboard() {
   const dispatch = useDispatch();
   const organiser = useSelector((state) => state.auth.data);
@@ -138,7 +185,7 @@ export default function OrganiserDashboard() {
                 >
                   <div className="list-title">{c.name}</div>
                   <div className="list-sub">
-                    {c.startDate} - {c.endDate}
+                    {formatDate(c.startDate)} - {formatDate(c.endDate)}
                   </div>
                 </button>
               ))}
@@ -216,8 +263,8 @@ export default function OrganiserDashboard() {
               <div>
                 <h2>{selectedConference?.name || "Conferinta"}</h2>
                 <div className="panel-sub">
-                  {selectedConference?.startDate} -{" "}
-                  {selectedConference?.endDate}
+                  {formatDate(selectedConference?.startDate)} -{" "}
+                  {formatDate(selectedConference?.endDate)}
                 </div>
               </div>
               <button
