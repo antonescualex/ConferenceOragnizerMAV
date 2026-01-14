@@ -69,7 +69,7 @@ export function submitArticleAndAssign({ title, conferenceId, authorId }) {
     return req(`/authors/${authorId}/articles`);
   };
 
-  return { type: "ARTICLES", payload: work() };
+  return { type: "FETCH_MY_ARTICLES", payload: work() };
 }
 
 
