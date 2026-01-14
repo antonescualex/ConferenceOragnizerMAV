@@ -1,4 +1,4 @@
-import { req } from "../actions/authentificationAction";
+import { req } from "../actions/authAction";
 
 export function fetchArticles(id) {
   return {

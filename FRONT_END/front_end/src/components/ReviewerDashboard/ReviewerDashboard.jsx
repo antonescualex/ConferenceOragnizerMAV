@@ -24,7 +24,7 @@ export default function ReviewerDashboard() {
         setConferences(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error("Error fetching conferences:", err);
+        console.error("Eroare la incarcarea conferintelor:", err);
         setConferences([]);
       })
       .finally(() => setLoading(false));
@@ -38,7 +38,7 @@ export default function ReviewerDashboard() {
         setArticles(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error("Error fetching articles:", err);
+        console.error("Eroare la incarcare articolelor:", err);
         setArticles([]);
       })
       .finally(() => setLoading(false));
@@ -52,7 +52,7 @@ export default function ReviewerDashboard() {
         setReviews(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error("Error fetching reviews:", err);
+        console.error("Eroare la incarcarea review-urilor:", err);
         setReviews([]);
       })
       .finally(() => setLoading(false));
@@ -139,7 +139,7 @@ export default function ReviewerDashboard() {
       setReviews(Array.isArray(updated) ? updated : []);
       setActiveReviewArticleId(null);
     } catch (err) {
-      console.error("Error submitting review:", err);
+      console.error("Eroare la trimiterea review-urilor:", err);
     } finally {
       setLoading(false);
     }
@@ -233,7 +233,7 @@ export default function ReviewerDashboard() {
                     <th>Titlu</th>
                     <th>Autor</th>
                     <th>Status</th>
-                    <th>Acțiuni</th>
+                    <th>Actiuni</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -338,7 +338,7 @@ export default function ReviewerDashboard() {
           {loading ? (
             <p className="empty-state">Se incarca...</p>
           ) : reviews.length === 0 ? (
-            <p className="empty-state">Nu ai nicio recenzie incă.</p>
+            <p className="empty-state">Nu ai nicio recenzie inca.</p>
           ) : (
             <div className="table-container">
               <table className="table">

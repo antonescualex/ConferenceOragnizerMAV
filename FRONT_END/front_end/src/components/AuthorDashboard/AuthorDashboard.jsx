@@ -106,7 +106,7 @@ export default function AuthorDashboard() {
         setRegisteredConferences(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error("Error registering to conference:", err);
+        console.error("Eroare la inregistrare:", err);
       })
       .finally(() => setLoading(false));
   }
@@ -133,7 +133,7 @@ export default function AuthorDashboard() {
         setArticles(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error("Error creating article:", err);
+        console.error("Eroare la crearea articolului:", err);
       })
       .finally(() => setLoading(false));
   }
@@ -159,7 +159,7 @@ export default function AuthorDashboard() {
               <span className="badge">{conferences.length}</span>
             </div>
             {loading ? (
-              <p className="empty-state">Se ÆRncarcŽ?...</p>
+              <p className="empty-state">Se incarca...</p>
             ) : conferences.length === 0 ? (
               <p className="empty-state">Nu exista conferinte disponibile.</p>
             ) : (
@@ -200,7 +200,7 @@ export default function AuthorDashboard() {
               <span className="badge">{registeredConferences.length}</span>
             </div>
             {loading ? (
-              <p className="empty-state">Se ÆRncarcŽ?...</p>
+              <p className="empty-state">Se incarca...</p>
             ) : registeredConferences.length === 0 ? (
               <p className="empty-state">
                 Nu esti inscris la nicio conferinta.
@@ -247,7 +247,7 @@ export default function AuthorDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Conferinaă</label>
+                  <label>Conferinta</label>
                   <select
                     name="conferenceId"
                     value={formData.conferenceId}
@@ -290,7 +290,7 @@ export default function AuthorDashboard() {
             )}
 
             {loading ? (
-              <p className="empty-state">Se încarcă...</p>
+              <p className="empty-state">Se încarca...</p>
             ) : articles.length === 0 ? (
               <p className="empty-state">
                 Nu ai niciun articol publicat inca. Creeaza unul!
