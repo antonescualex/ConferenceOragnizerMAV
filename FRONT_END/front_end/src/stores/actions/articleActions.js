@@ -1,39 +1,32 @@
-import { req } from "../actions/authentificationAction"
+import { req } from "../actions/authentificationAction";
 
-export function fetchArticles(id){
-    return{
-        type:"FETCH_MY_ARTICLES",
-        payload:req(`/authors/${id}/articles`)
-    
-    }
+export function fetchArticles(id) {
+  return {
+    type: "FETCH_MY_ARTICLES",
+    payload: req(`/authors/${id}/articles`),
+  };
 }
 
-export function fetchConferenceArticles(confId){
-    return{
-        type:"FETCH_CONFERENCE_ARTICLES",
-        payload:req(`/conferences/${confId}/articles`)
-
-    }
-
+export function fetchConferenceArticles(confId) {
+  return {
+    type: "FETCH_CONFERENCE_ARTICLES",
+    payload: req(`/conferences/${confId}/articles`),
+  };
 }
 
-export function fetchArticleBId(id){
-    return{
-        type:"FETCH_ARTICLE",
-        payload:req(`/articles/${id}`)
-    
-    };
+export function fetchArticleBId(id) {
+  return {
+    type: "FETCH_ARTICLE",
+    payload: req(`/articles/${id}`),
+  };
 }
 
-export function fetchArticleReviews(artId){
-    return{
-        type:"FETCH_REVIEWS",
-        payload:req(`/articles/${artId}/reviews`)
-    
-
-    }
+export function fetchArticleReviews(artId) {
+  return {
+    type: "FETCH_REVIEWS",
+    payload: req(`/articles/${artId}/reviews`),
+  };
 }
-
 
 export function submitArticleAndAssign({ title, conferenceId, authorId }) {
   const work = async () => {
@@ -72,13 +65,12 @@ export function submitArticleAndAssign({ title, conferenceId, authorId }) {
   return { type: "FETCH_MY_ARTICLES", payload: work() };
 }
 
-
-export function updateArticle(artId,payload){
-    return {
-        type:"UPDATE_ARTICLE",
-        payload:req(`/articles/${artId}`,{
-            method:"PUT",
-            body:JSON.stringify(payload)
-        })
-    }
+export function updateArticle(artId, payload) {
+  return {
+    type: "UPDATE_ARTICLE",
+    payload: req(`/articles/${artId}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  };
 }
