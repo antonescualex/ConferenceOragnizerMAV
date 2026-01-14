@@ -230,7 +230,9 @@ app.get("/reviewers/:idReviewer", async (req, res, next) => {
  */
 app.get("/articles/:idArticle", async (req, res, next) => {
   try {
-    const article = await Article.findByPk(req.params.idArticle);
+    const article = await Article.findByPk(req.params.idArticle, {
+      include: [Conference, Author],
+    });
 
     if (!article) {
       res.status(404).json({ message: "Article not found" });
@@ -432,7 +434,12 @@ app.get("/reviews", async (req, res, next) => {
 app.get("/authors/:authorId/articles", async (req, res, next) => {
   try {
     const author = await Author.findByPk(req.params.authorId, {
-      include: [Article],
+      include: [
+        {
+          model: Article,
+          include: [Conference],
+        },
+      ],
     });
     if (!author) {
       res.status(404).json({ message: "Nu exista autor cu acest id" });
@@ -487,6 +494,112 @@ app.get("/reviewers/:reviewerId/reviews", async (req, res, next) => {
 });
 
 /**
+ * GET /reviewers/:reviewerId/conferences
+ *
+ * Description:
+ * Returns conferences assigned to a reviewer.
+ */
+app.get("/reviewers/:reviewerId/conferences", async (req, res, next) => {
+  try {
+    const reviewer = await Reviewer.findByPk(req.params.reviewerId, {
+      include: [Conference],
+    });
+    if (!reviewer) {
+      return res.status(404).json({ message: "Reviewer not found" });
+    }
+    return res.status(200).json(reviewer.conferences || []);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /reviewers/:reviewerId/conferences/:conferenceId/articles
+ *
+ * Description:
+ * Returns conference articles only if reviewer is assigned.
+ */
+app.get(
+  "/reviewers/:reviewerId/conferences/:conferenceId/articles",
+  async (req, res, next) => {
+    try {
+      const { reviewerId, conferenceId } = req.params;
+
+      const conference = await Conference.findByPk(conferenceId);
+      if (!conference) {
+        return res.status(404).json({ message: "Conference not found" });
+      }
+
+      const reviewer = await Reviewer.findByPk(reviewerId);
+      if (!reviewer) {
+        return res.status(404).json({ message: "Reviewer not found" });
+      }
+
+      const assignment = await ConferenceReviewer.findOne({
+        where: { conferenceId, reviewerId },
+      });
+      if (!assignment) {
+        return res.status(403).json({ message: "Reviewer not assigned" });
+      }
+
+      const articles = await Article.findAll({
+        where: { conferenceId },
+        include: [Author],
+      });
+      return res.status(200).json(articles || []);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /reviewers/:reviewerId/conferences/:conferenceId/reviews
+ *
+ * Description:
+ * Returns reviewer reviews for a conference.
+ */
+app.get(
+  "/reviewers/:reviewerId/conferences/:conferenceId/reviews",
+  async (req, res, next) => {
+    try {
+      const { reviewerId, conferenceId } = req.params;
+
+      const conference = await Conference.findByPk(conferenceId);
+      if (!conference) {
+        return res.status(404).json({ message: "Conference not found" });
+      }
+
+      const reviewer = await Reviewer.findByPk(reviewerId);
+      if (!reviewer) {
+        return res.status(404).json({ message: "Reviewer not found" });
+      }
+
+      const assignment = await ConferenceReviewer.findOne({
+        where: { conferenceId, reviewerId },
+      });
+      if (!assignment) {
+        return res.status(403).json({ message: "Reviewer not assigned" });
+      }
+
+      const reviews = await Review.findAll({
+        where: { reviewerId },
+        include: [
+          {
+            model: Article,
+            where: { conferenceId },
+            required: true,
+          },
+        ],
+      });
+      return res.status(200).json(reviews || []);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
  * GET /conferences/:conferenceId/articles
  *
  * Descriere:
@@ -516,7 +629,12 @@ app.get("/conferences/:conferenceId/articles", async (req, res, next) => {
 app.get("/articles/:articleId/reviews", async (req, res, next) => {
   try {
     const article = await Article.findByPk(req.params.articleId, {
-      include: [Review],
+      include: [
+        {
+          model: Review,
+          include: [Reviewer],
+        },
+      ],
     });
     if (!article) {
       res.status(404).json({ message: "Nu exista articol cu acest id" });
@@ -832,12 +950,25 @@ app.post("/article", async (req, res, next) => {
  *  - decision: ENUM {"PENDING", "ACCEPT", "REJECT", "MODIFICATION_REQUIRED"}
  *              IMPLICIT: PENDING
  *  - comments: STRING | NULL
- *  - grade: FLOAT
- *           INTERVAL PERMIS: 0 - 5
  */
 app.post("/review", async (req, res, next) => {
   try {
-    const review = await Review.create(req.body);
+    const { reviewerId, articleId, decision, comments } = req.body || {};
+    if (!reviewerId || !articleId) {
+      return res
+        .status(400)
+        .json({ message: "reviewerId and articleId are required" });
+    }
+
+    const existing = await Review.findOne({
+      where: { reviewerId, articleId },
+    });
+    if (existing) {
+      return res.status(409).json({ message: "Review already exists" });
+    }
+
+    const review = await Review.create({ reviewerId, articleId, decision, comments });
+    await updateArticleStatusFromDecision(articleId, decision);
     res.status(201).json({
       message: "Review has been created",
       data: review,
@@ -1037,8 +1168,6 @@ app.put("/conferences/:idConference", async (req, res, next) => {
  *  - decision: ENUM {"PENDING", "ACCEPT", "REJECT", "MODIFICATION_REQUIRED"}
  *              IMPLICIT: PENDING
  *  - comments: STRING | NULL
- *  - grade: FLOAT
- *           INTERVAL PERMIS: 0 - 5
  */
 app.put("/reviews/:idReview", async (req, res, next) => {
   try {
@@ -1048,7 +1177,9 @@ app.put("/reviews/:idReview", async (req, res, next) => {
         message: "Review not found!",
       });
     } else {
-      await review.update(req.body);
+      const { decision, comments } = req.body || {};
+      await review.update({ decision, comments });
+      await updateArticleStatusFromDecision(review.articleId, decision);
       res.status(201).json({
         message: "Reviews updated successfully",
         data: review,
@@ -1066,6 +1197,24 @@ app.put("/reviews/:idReview", async (req, res, next) => {
 app.listen(port, () => {
   console.log("Server running on http://localhost:" + port);
 });
+
+function updateArticleStatusFromDecision(articleId, decision) {
+  if (!articleId || !decision || decision === "PENDING") return Promise.resolve();
+
+  const statusMap = {
+    ACCEPT: "ACCEPTED",
+    REJECT: "REJECTED",
+    MODIFICATION_REQUIRED: "UNDER_REVIEW",
+  };
+
+  const nextStatus = statusMap[decision];
+  if (!nextStatus) return Promise.resolve();
+
+  return Article.update(
+    { status: nextStatus },
+    { where: { id: articleId } }
+  );
+}
 
 /**
  * Descriere:

@@ -65,7 +65,7 @@ export default function AuthorDashboard() {
   useEffect(() => {
     if (!selectedArticleId) return;
     setLoading(true);
-    req(`/article/${selectedArticleId}/reviews`)
+    req(`/articles/${selectedArticleId}/reviews`)
       .then((data) => {
         setArticleReviews(Array.isArray(data) ? data : []);
       })
@@ -393,20 +393,20 @@ export default function AuthorDashboard() {
                 <div key={review.id} className="review-item">
                   <div className="review-header">
                     <div>
-                      <strong>{review.reviewer?.name || "Anonim"}</strong>
+                      <strong>{review.reviewer?.fullName || "Anonim"}</strong>
                       <p className="review-date">
                         {new Date(review.createdAt).toLocaleDateString("ro-RO")}
                       </p>
                     </div>
-                    <span className="rating">⭐ {review.rating}/10</span>
+                    <span className="rating">{review.decision || "PENDING"}</span>
                   </div>
-                  <p className="review-content">{review.comment}</p>
+                  <p className="review-content">{review.comments}</p>
                   <span
                     className={`review-status ${getReviewStatus(
-                      review.status
+                      review.decision
                     )}`}
                   >
-                    {review.status || "Completă"}
+                    {review.decision || "PENDING"}
                   </span>
                 </div>
               ))}
@@ -429,3 +429,6 @@ function getReviewStatus(status) {
   if (!status) return "completed";
   return status.toLowerCase();
 }
+
+
+

@@ -54,7 +54,6 @@ export function submitArticleAndAssign({ title, conferenceId, authorId }) {
           reviewerId: r.id,
           decision: "PENDING",
           comments: "",
-          grade: null,
         }),
       });
     }
