@@ -115,8 +115,7 @@ export default function OrganiserDashboard() {
     <div className="dash">
       <div className="topbar">
         <div className="topbar-title">
-          Bine ai venit, {organiser?.fullName || "Organiser"}
-        </div>
+          Bine ai venit, {organiser?.fullName || "Organiser"} | Organizator</div>
         <div className="topbar-sub">{organiser?.email || ""}</div>
       </div>
 

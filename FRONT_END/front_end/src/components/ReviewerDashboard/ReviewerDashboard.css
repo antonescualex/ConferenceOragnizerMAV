@@ -23,7 +23,18 @@
   padding: 18px 28px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+}
+
+.topbar-welcome {
+  flex: 1;
+}
+
+.topbar-email {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: right;
+  padding-left: 20px;
 }
 
 .btn-back {

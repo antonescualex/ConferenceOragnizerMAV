@@ -76,9 +76,11 @@ export default function ReviewerDashboard() {
     return (
       <div className="dash">
         <div className="topbar">
-          <div className="topbar-title">Reviewer Dashboard</div>
-          <div className="topbar-sub">
-            Bine ai venit, {reviewer?.name || "Reviewer"}
+          <div className="topbar-welcome">
+            <div className="topbar-title">Bine ai venit, {reviewer?.fullName || "Reviewer"} | Reviewer</div>
+          </div>
+          <div className="topbar-email">
+            {reviewer?.email || "email@exemplu.ro"}
           </div>
         </div>
 
@@ -188,7 +190,7 @@ export default function ReviewerDashboard() {
           {loading ? (
             <p className="empty-state">Se incarca...</p>
           ) : reviews.length === 0 ? (
-            <p className="empty-state">Nu ai nicio recenzie inca.</p>
+            <p className="empty-state">Nu ai nicio recenzie incă.</p>
           ) : (
             <div className="table-container">
               <table className="table">
@@ -205,7 +207,7 @@ export default function ReviewerDashboard() {
                     <tr key={review.id}>
                       <td>{review.article?.title || "Necunoscut"}</td>
                       <td>
-                        <span className="status approved">Completa</span>
+                        <span className="status approved">Completă</span>
                       </td>
                       <td>{review.rating || "-"}/10</td>
                       <td>
