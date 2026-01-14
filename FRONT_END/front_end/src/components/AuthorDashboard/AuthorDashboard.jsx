@@ -390,7 +390,10 @@ export default function AuthorDashboard() {
           ) : (
             <div className="reviews-list">
               {articleReviews.map((review) => (
-                <div key={review.id} className="review-item">
+                <div
+                  key={review.id}
+                  className={`review-item ${getReviewStatus(review.decision)}`}
+                >
                   <div className="review-header">
                     <div>
                       <strong>{review.reviewer?.fullName || "Anonim"}</strong>
@@ -401,11 +404,9 @@ export default function AuthorDashboard() {
                     <span className="rating">{review.decision || "PENDING"}</span>
                   </div>
                   <p className="review-content">{review.comments}</p>
-                  <span
-                    className={`review-status ${getReviewStatus(
-                      review.decision
-                    )}`}
-                  >
+                  <span className={`review-status ${getReviewStatus(
+                    review.decision
+                  )}`}>
                     {review.decision || "PENDING"}
                   </span>
                 </div>
@@ -420,14 +421,18 @@ export default function AuthorDashboard() {
 
 function getStatusClass(status) {
   if (!status) return "pending";
-  if (status.toUpperCase().includes("APPROVED")) return "approved";
-  if (status.toUpperCase().includes("REJECTED")) return "rejected";
+  const normalized = status.toUpperCase();
+  if (normalized.includes("ACCEPTED")) return "approved";
+  if (normalized.includes("REJECTED")) return "rejected";
   return "pending";
 }
 
 function getReviewStatus(status) {
-  if (!status) return "completed";
-  return status.toLowerCase();
+  if (!status) return "pending";
+  const normalized = status.toUpperCase();
+  if (normalized === "ACCEPT") return "approved";
+  if (normalized === "REJECT") return "rejected";
+  return "pending";
 }
 
 

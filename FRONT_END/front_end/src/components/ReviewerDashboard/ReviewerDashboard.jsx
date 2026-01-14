@@ -354,7 +354,11 @@ export default function ReviewerDashboard() {
                     <tr key={review.id}>
                       <td>{review.article?.title || "Necunoscut"}</td>
                       <td>
-                        <span className="status approved">
+                        <span
+                          className={`status ${getDecisionClass(
+                            review.decision
+                          )}`}
+                        >
                           {review.decision || "PENDING"}
                         </span>
                       </td>
@@ -371,4 +375,12 @@ export default function ReviewerDashboard() {
       </div>
     </div>
   );
+}
+
+function getDecisionClass(decision) {
+  if (!decision) return "pending";
+  const normalized = decision.toUpperCase();
+  if (normalized === "ACCEPT") return "approved";
+  if (normalized === "REJECT") return "rejected";
+  return "pending";
 }

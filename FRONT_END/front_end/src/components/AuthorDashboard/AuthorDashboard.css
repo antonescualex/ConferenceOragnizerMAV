@@ -312,6 +312,14 @@
   padding: 16px;
 }
 
+.review-item.rejected {
+  border-left-color: var(--error);
+}
+
+.review-item.pending {
+  border-left-color: var(--warning);
+}
+
 .review-header {
   display: flex;
   justify-content: space-between;
@@ -355,6 +363,16 @@
   font-weight: 600;
   background: #d1fae5;
   color: #065f46;
+}
+
+.review-status.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.review-status.pending {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 @media (max-width: 768px) {
