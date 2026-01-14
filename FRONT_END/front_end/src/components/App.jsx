@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import store from "../stores/store";
 import LoginPage from "./LoginPage/LoginPage";
+import RegisterPage from "./RegisterPage/RegisterPage";
 import OrganiserDashboard from "./OrganiserDashboard/OrganiserDashboard";
 import ReviewerDashboard from "./ReviewerDashboard/ReviewerDashboard";
 import "./App.css";
@@ -25,6 +26,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<RoleRouter />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
