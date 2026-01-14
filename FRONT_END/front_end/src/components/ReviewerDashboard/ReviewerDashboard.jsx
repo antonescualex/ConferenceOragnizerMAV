@@ -190,7 +190,7 @@ export default function ReviewerDashboard() {
                         {new Date(conf.endDate).toLocaleDateString("ro-RO")}
                       </span>
                     </div>
-                    <button className="btn-primary">Selectează</button>
+                    <button className="btn-primary">Selecteaza</button>
                   </div>
                 ))}
               </div>
@@ -220,7 +220,7 @@ export default function ReviewerDashboard() {
           </div>
 
           {loading ? (
-            <p className="empty-state">Se încarca...</p>
+            <p className="empty-state">Se incarca...</p>
           ) : articles.length === 0 ? (
             <p className="empty-state">
               Nu sunt articole disponibile pentru review.

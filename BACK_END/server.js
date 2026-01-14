@@ -967,7 +967,12 @@ app.post("/review", async (req, res, next) => {
       return res.status(409).json({ message: "Review already exists" });
     }
 
-    const review = await Review.create({ reviewerId, articleId, decision, comments });
+    const review = await Review.create({
+      reviewerId,
+      articleId,
+      decision,
+      comments,
+    });
     await updateArticleStatusFromDecision(articleId, decision);
     res.status(201).json({
       message: "Review has been created",
@@ -1194,12 +1199,34 @@ app.put("/reviews/:idReview", async (req, res, next) => {
  * Descriere:
  * Metoda care porneste serverul si permite ascultarea cererilor HTTP.
  */
-app.listen(port, () => {
-  console.log("Server running on http://localhost:" + port);
-});
+// app.listen(port, () => {
+//   console.log("Server running on http://localhost:" + port);
+// });
+
+const PORT = process.env.PORT || 3000;
+
+async function start() {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected");
+
+    await sequelize.sync(); // FĂRĂ force:true
+    console.log("Database synced");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+}
+
+start();
 
 function updateArticleStatusFromDecision(articleId, decision) {
-  if (!articleId || !decision || decision === "PENDING") return Promise.resolve();
+  if (!articleId || !decision || decision === "PENDING")
+    return Promise.resolve();
 
   const statusMap = {
     ACCEPT: "ACCEPTED",
@@ -1210,10 +1237,7 @@ function updateArticleStatusFromDecision(articleId, decision) {
   const nextStatus = statusMap[decision];
   if (!nextStatus) return Promise.resolve();
 
-  return Article.update(
-    { status: nextStatus },
-    { where: { id: articleId } }
-  );
+  return Article.update({ status: nextStatus }, { where: { id: articleId } });
 }
 
 /**

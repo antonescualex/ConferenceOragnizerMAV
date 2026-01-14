@@ -159,7 +159,7 @@ export default function AuthorDashboard() {
               <span className="badge">{conferences.length}</span>
             </div>
             {loading ? (
-              <p className="empty-state">Se incarca...</p>
+              <p className="empty-state">Se ÆRncarcŽ?...</p>
             ) : conferences.length === 0 ? (
               <p className="empty-state">Nu exista conferinte disponibile.</p>
             ) : (
@@ -200,7 +200,7 @@ export default function AuthorDashboard() {
               <span className="badge">{registeredConferences.length}</span>
             </div>
             {loading ? (
-              <p className="empty-state">Se incarca...</p>
+              <p className="empty-state">Se ÆRncarcŽ?...</p>
             ) : registeredConferences.length === 0 ? (
               <p className="empty-state">
                 Nu esti inscris la nicio conferinta.
@@ -247,7 +247,7 @@ export default function AuthorDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Conferinta</label>
+                  <label>Conferinaă</label>
                   <select
                     name="conferenceId"
                     value={formData.conferenceId}
@@ -357,7 +357,7 @@ export default function AuthorDashboard() {
           {selectedArticle && (
             <div className="article-details">
               <div className="detail-section">
-                <h3>Conținut</h3>
+                <h3>Continut</h3>
                 <p>{selectedArticle.content}</p>
               </div>
 

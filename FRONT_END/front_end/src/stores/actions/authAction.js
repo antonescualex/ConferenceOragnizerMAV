@@ -1,4 +1,4 @@
-const SERVER = "http://localhost:3000";
+const SERVER = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export function req(path, options = {}) {
   return fetch(SERVER + path, {
