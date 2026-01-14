@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { req } from "../../stores/actions/authAction";
 import "./AuthorDashboard.css";
 
@@ -17,13 +17,14 @@ export default function AuthorDashboard() {
     conferenceId: "",
   });
   const [conferences, setConferences] = useState([]);
+  const [registeredConferences, setRegisteredConferences] = useState([]);
 
   const authorId = author?.id;
 
   useEffect(() => {
     if (!authorId) return;
     setLoading(true);
-    req(`/author/${authorId}/articles`)
+    req(`/authors/${authorId}/articles`)
       .then((data) => {
         setArticles(Array.isArray(data) ? data : []);
       })
@@ -46,6 +47,20 @@ export default function AuthorDashboard() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!authorId) return;
+    setLoading(true);
+    req(`/authors/${authorId}/conferences`)
+      .then((data) => {
+        setRegisteredConferences(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error("Error fetching registered conferences:", err);
+        setRegisteredConferences([]);
+      })
+      .finally(() => setLoading(false));
+  }, [authorId]);
 
   useEffect(() => {
     if (!selectedArticleId) return;
@@ -78,12 +93,30 @@ export default function AuthorDashboard() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
+  function handleRegisterToConference(conferenceId) {
+    if (!authorId || !conferenceId) return;
+    setLoading(true);
+    req(`/conferences/${conferenceId}/authors`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ authorId }),
+    })
+      .then(() => req(`/authors/${authorId}/conferences`))
+      .then((data) => {
+        setRegisteredConferences(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error("Error registering to conference:", err);
+      })
+      .finally(() => setLoading(false));
+  }
+
   function handleCreateArticle(e) {
     e.preventDefault();
     if (!authorId || !formData.title.trim() || !formData.conferenceId) return;
 
     setLoading(true);
-    req("/articles", {
+    req("/article", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -94,7 +127,7 @@ export default function AuthorDashboard() {
       .then(() => {
         setFormData({ title: "", content: "", conferenceId: "" });
         setShowCreateForm(false);
-        return req(`/author/${authorId}/articles`);
+        return req(`/authors/${authorId}/articles`);
       })
       .then((data) => {
         setArticles(Array.isArray(data) ? data : []);
@@ -118,6 +151,70 @@ export default function AuthorDashboard() {
         </div>
 
         <div className="main">
+          <div className="panel">
+            <div className="panel-head">
+              <h2>Toate conferintele</h2>
+              <span className="badge">{conferences.length}</span>
+            </div>
+            {loading ? (
+              <p className="empty-state">Se ÆRncarcŽ?...</p>
+            ) : conferences.length === 0 ? (
+              <p className="empty-state">Nu exista conferinte disponibile.</p>
+            ) : (
+              <div className="articles-list">
+                {conferences.map((conf) => {
+                  const isRegistered = registeredConferences.some(
+                    (c) => c.id === conf.id
+                  );
+                  return (
+                    <div key={conf.id} className="article-item">
+                      <div className="article-header">
+                        <h3>{conf.name}</h3>
+                      </div>
+                      <p className="article-desc">{conf.description}</p>
+                      <div className="article-meta">
+                        <span>
+                          {new Date(conf.startDate).toLocaleDateString("ro-RO")} -{" "}
+                          {new Date(conf.endDate).toLocaleDateString("ro-RO")}
+                        </span>
+                      </div>
+                      <button
+                        className="btn-sm"
+                        onClick={() => handleRegisterToConference(conf.id)}
+                        disabled={isRegistered}
+                      >
+                        {isRegistered ? "Inscris" : "Inscrie-te"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="panel">
+            <div className="panel-head">
+              <h2>Conferintele mele</h2>
+              <span className="badge">{registeredConferences.length}</span>
+            </div>
+            {loading ? (
+              <p className="empty-state">Se ÆRncarcŽ?...</p>
+            ) : registeredConferences.length === 0 ? (
+              <p className="empty-state">Nu esti inscris la nicio conferinta.</p>
+            ) : (
+              <div className="articles-list">
+                {registeredConferences.map((conf) => (
+                  <div key={conf.id} className="article-item">
+                    <div className="article-header">
+                      <h3>{conf.name}</h3>
+                    </div>
+                    <p className="article-desc">{conf.description}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="panel">
             <div className="panel-head">
               <h2>Articolele Mele</h2>
@@ -151,7 +248,7 @@ export default function AuthorDashboard() {
                     required
                   >
                     <option value="">Selecteaza conferinta</option>
-                    {conferences.map((conf) => (
+                    {registeredConferences.map((conf) => (
                       <option key={conf.id} value={conf.id}>
                         {conf.name}
                       </option>

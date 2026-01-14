@@ -10,6 +10,7 @@ const Article = require("./models/article");
 const Review = require("./models/review");
 const Conference = require("./models/conference");
 const ConferenceReviewer = require("./models/conferenceReviewer");
+const AuthorConference = require("./models/authorConferences");
 const cors = require("cors");
 app.use(cors());
 
@@ -81,6 +82,24 @@ Reviewer.belongsToMany(Conference, {
   otherKey: "conferenceId",
 });
 
+/**
+ * Relatia intre modelele: Author si Conference
+ *
+ * Descriere:
+ * O conferinta poate avea mai multi autori.
+ * Un autor poate fi inregistrat la mai multe conferinte.
+ */
+Author.belongsToMany(Conference, {
+  through: AuthorConference,
+  foreignKey: "authorId",
+  otherKey: "conferenceId",
+});
+Conference.belongsToMany(Author, {
+  through: AuthorConference,
+  foreignKey: "conferenceId",
+  otherKey: "authorId",
+});
+
 app.use(
   express.urlencoded({
     extended: true,
@@ -144,20 +163,40 @@ app.post("/login", async (req, res, next) => {
 //---------------------------------------------------------------------------
 
 /**
- * GET /authors/:idAuthor
+ * GET /authors/:authorId
  *
  * Descriere:
  * Returneaza un autor dupa ID.
  */
-app.get("/authors/:idAuthor", async (req, res, next) => {
+app.get("/authors/:authorId", async (req, res, next) => {
   try {
-    const author = await Author.findByPk(req.params.idAuthor);
+    const author = await Author.findByPk(req.params.authorId);
 
     if (!author) {
       res.status(404).json({ message: "Author not found" });
     } else {
       res.status(200).json(author);
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /authors/:authorId/conferences
+ *
+ * Descriere:
+ * Returneaza conferintele la care este inregistrat un autor.
+ */
+app.get("/authors/:authorId/conferences", async (req, res, next) => {
+  try {
+    const author = await Author.findByPk(req.params.authorId, {
+      include: [Conference],
+    });
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+    return res.status(200).json(author.conferences || []);
   } catch (err) {
     next(err);
   }
@@ -696,6 +735,40 @@ app.post("/conferences/:conferenceId/reviewers", async (req, res, next) => {
       );
       return res.status(200).json(updatedConference.reviewers);
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * POST /conferences/:conferenceId/authors
+ *
+ * Descriere:
+ * Adauga autorii unei conferinte.
+ */
+app.post("/conferences/:conferenceId/authors", async (req, res, next) => {
+  try {
+    const conference = await Conference.findByPk(req.params.conferenceId);
+    if (!conference) {
+      return res.status(404).json({ message: "Conference not found" });
+    }
+
+    const authorId = req.body?.authorId;
+    if (!authorId) {
+      return res.status(400).json({ message: "authorId required" });
+    }
+
+    const author = await Author.findByPk(authorId);
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    await conference.addAuthor(author);
+
+    const updated = await Conference.findByPk(req.params.conferenceId, {
+      include: [Author],
+    });
+    return res.status(200).json(updated.authors || []);
   } catch (err) {
     next(err);
   }
