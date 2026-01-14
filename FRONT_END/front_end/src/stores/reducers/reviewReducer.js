@@ -10,6 +10,8 @@ export default function reviewReducer(state = initialState, action) {
       return { ...state, personalReviews: action.payload };
     case "ARTICLE_REVIEWS_FULFILLED":
       return { ...state, articleReviews: action.payload };
+    case "UPDATE_REVIEW_FULFILLED":
+      return { ...state, error: null };
     case "PERSONAL_REVIEWS_REJECTED":
     case "ARTICLE_REVIEWS_REJECTED":
     case "UPDATE_REVIEW_REJECTED":
