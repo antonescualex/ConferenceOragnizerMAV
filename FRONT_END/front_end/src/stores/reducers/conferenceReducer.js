@@ -2,19 +2,14 @@ const initialState = {
   data: [],
   error: null,
   conferenceArticle: [],
+  conferenceReviewers: [],
 };
 
 export default function conferenceReducer(state = initialState, action) {
   switch (action.type) {
     case "FETCH_CONFERENCE_FULFILLED":
-      return { ...state, data: action.payload, error: null };
-    case "FETCH_CONFERENCE_REJECTED":
-      return { ...state, error: action.payload };
-
     case "FETCH_CONFERENCES_FULFILLED":
       return { ...state, data: action.payload, error: null };
-    case "FETCH_CONFERENCES_REJECTED":
-      return { ...state, error: action.payload };
 
     case "CREATE_CONFERENCE_FULFILLED":
       return {
@@ -22,12 +17,19 @@ export default function conferenceReducer(state = initialState, action) {
         data: [...state.data, action.payload.data || action.payload],
         error: null,
       };
-    case "CREATE_CONFERENCE_REJECTED":
-      return { ...state, error: action.payload };
 
     case "FETCH_CONFERENCE_ARTICLES_FULFILLED":
       return { ...state, conferenceArticle: action.payload, error: null };
+    case "FETCH_CONFERENCE_REVIEWERS_FULFILLED":
+    case "SET_CONFERENCE_REVIEWERS_FULFILLED":
+      return { ...state, conferenceReviewers: action.payload, error: null };
+
+    case "FETCH_CONFERENCE_REJECTED":
+    case "FETCH_CONFERENCES_REJECTED":
     case "FETCH_CONFERENCE_ARTICLES_REJECTED":
+    case "CREATE_CONFERENCE_REJECTED":
+    case "FETCH_CONFERENCE_REVIEWERS_REJECTED":
+    case "SET_CONFERENCE_REVIEWERS_REJECTED":
       return { ...state, error: action.payload };
     default:
       return state;

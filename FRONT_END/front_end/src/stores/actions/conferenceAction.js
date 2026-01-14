@@ -30,3 +30,20 @@ export function fetchConferenceArticles(conferenceId) {
     payload: req(`/conferences/${conferenceId}/articles`),
   };
 }
+
+export function fetchConferenceReviewers(conferenceId) {
+  return {
+    type: "FETCH_CONFERENCE_REVIEWERS",
+    payload: req(`/conferences/${conferenceId}/reviewers`),
+  };
+}
+
+export function setConferenceReviewers(conferenceId, reviewerIds) {
+  return {
+    type: "SET_CONFERENCE_REVIEWERS",
+    payload: req(`/conferences/${conferenceId}/reviewers`, {
+      method: "POST",
+      body: JSON.stringify({ reviewerIds }),
+    }),
+  };
+}
